@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"os"
@@ -21,5 +22,9 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, users)
 	})
-	e.Logger.Fatal(e.Start(os.Getenv("PORT")))
+	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
+	fmt.Printf("port is %v", port)
+	e.Logger.Fatal(e.Start(port))
 }
+
+//nixpacks build --name mn .  --install-cmd  "go mod download"  --build-cmd "go build -o out backend/main.go"
