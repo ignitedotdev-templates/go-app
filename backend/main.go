@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -12,32 +11,16 @@ func main() {
 	e := echo.New()
 
 	e.GET("/", func(c echo.Context) error {
-		envVars := make(map[string]string)
-		for _, env := range os.Environ() {
-			pair := splitAtFirstEqual(env)
-			envVars[pair[0]] = pair[1]
-		}
+		appVersion := os.Getenv("APP_VERSION")
 
 		response := map[string]interface{}{
-			"message": "These are your current environment variables. Update an env and refresh.",
-			"envs":    envVars,
+			"message":     "This is your APP_VERSION environment variable.",
+			"app_version": appVersion,
 		}
 
 		return c.JSON(http.StatusOK, response)
 	})
 
-	port := fmt.Sprintf(":%s", os.Getenv("PORT"))
-	fmt.Printf("port is %v", port)
+	port := ":" + os.Getenv("PORT")
 	e.Logger.Fatal(e.Start(port))
-}
-
-// splitAtFirstEqual splits a string at the first occurrence of '='
-// and returns a slice with the key and value as separate elements.
-func splitAtFirstEqual(s string) []string {
-	for i := range s {
-		if s[i] == '=' {
-			return []string{s[:i], s[i+1:]}
-		}
-	}
-	return []string{s, ""}
 }
